@@ -1,5 +1,7 @@
 package pages;
 
+import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Test109Page {
 	WebDriver driver;
+	String beforeListItem = "input[name = 'todo[";
+	String afterListItem = "]']";
 
 	public Test109Page(WebDriver driver) {
 		this.driver = driver;
@@ -48,13 +52,12 @@ public class Test109Page {
 	}
 
 	public void validateAllCheckBoxesAreChecked() {
-		if (LIST_ITEM_1_CHECK_BOX_ELEMENT.isSelected() && LIST_ITEM_2_CHECK_BOX_ELEMENT.isSelected()
-				&& LIST_ITEM_3_CHECK_BOX_ELEMENT.isSelected() && LIST_ITEM_4_CHECK_BOX_ELEMENT.isSelected()) {
-			System.out.println("All list item check boxes are checked.");
-		} else {
-			System.out.println("Not all list item check boxes are checked.");
-		}
 		try {
+			for (int i = 0; i <= 4; i++) {
+				Assert.assertTrue("Not all check boxes are checked.",
+						driver.findElement(By.cssSelector(beforeListItem + i + afterListItem)).isSelected());
+			}
+			System.out.println("All items are checked!");
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -62,31 +65,31 @@ public class Test109Page {
 	}
 
 	public void checkAListItemCheckBox() {
-		WebDriverWait wait = new WebDriverWait(driver,3);
+		WebDriverWait wait = new WebDriverWait(driver, 3);
 		wait.until(ExpectedConditions.visibilityOf(LIST_ITEM_5_CHECK_BOX_ELEMENT)).click();
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void addAListItem() {
 		ADD_INPUT_BOX_ELEMENT.sendKeys("List Item 5");
 		ADD_BUTTON_ELEMENT.click();
-		
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void addListItems() {
-		for(int i = 0; i <= 4; i++) {
-		ADD_INPUT_BOX_ELEMENT.sendKeys("List Item " + i);
-		ADD_BUTTON_ELEMENT.click();}
+		for (int i = 0; i <= 4; i++) {
+			ADD_INPUT_BOX_ELEMENT.sendKeys("List Item " + i);
+			ADD_BUTTON_ELEMENT.click();
+		}
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
@@ -105,26 +108,23 @@ public class Test109Page {
 
 	public void validateListItemIsRemoved() {
 		try {
-			LIST_ITEM_5_CHECK_BOX_ELEMENT.isDisplayed();
+			Assert.assertFalse("The list item was not removed.", LIST_ITEM_5_CHECK_BOX_ELEMENT.isDisplayed());
 		} catch (NoSuchElementException e) {
 //			e.printStackTrace(); //We committed so the console looks cleaner
 			System.out.println("Item is removed!");
 		}
-		
+
 	}
-	
+
 	public void validateAllListItemsAreRemoved() {
 		try {
-			LIST_ITEM_0_CHECK_BOX_ELEMENT.isDisplayed();
-			LIST_ITEM_1_CHECK_BOX_ELEMENT.isDisplayed();
-			LIST_ITEM_2_CHECK_BOX_ELEMENT.isDisplayed();
-			LIST_ITEM_3_CHECK_BOX_ELEMENT.isDisplayed();
-			LIST_ITEM_4_CHECK_BOX_ELEMENT.isDisplayed();
+			for (int i = 0; i <= 4; i++) {
+				Assert.assertFalse("Not all list items were removed. ",driver.findElement(By.cssSelector(beforeListItem + i + afterListItem)).isDisplayed());
+			}
 		} catch (NoSuchElementException e) {
 //			e.printStackTrace(); //We committed so the console looks cleaner
-			System.out.println("Items are removed!");
+			System.out.println("All list items are removed!");
 		}
-		
+
 	}
 }
-
